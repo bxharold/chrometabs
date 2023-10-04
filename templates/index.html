@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!--  ~/vscode/yanother_flask_app/yafa.py, front-end companion to mytabs.*  -->
+<html lang="en">
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+        <link href="/static/styles.css" rel="stylesheet">
+        <title>YANFAPP</title>
+    <script>
+      // this approach to canned-query buttons was replaced by jinja2 template approach ...
+      var z = 0
+      const qs = []
+      qs[z++] = "SELECT rowid, title, url FROM mytabs WHERE title LIKE '%%'"
+      qs[z++] = "SELECT rowid, title, substring(url,9) FROM mytabs WHERE title LIKE '%%'"
+      function canset(n) {
+         document.getElementById("Name").value = qs[n]
+      }
+      // ... with usage like:  <button type='button' onclick='canset(0)'> 0 </button>
+    </script>
+    </head>
+    <body>
+        <div class="header">
+            <a href="/"> <h2>~/garden/chrometabs </h2> </a>
+        </div>
+                            <pre>based on ~/vscode/week9-flask/birthdays/templates/index.html
+                                 and ~/vscode/yanother_flask_app </pre>
+            <div class="section">
+
+                <form action="/query1" method="POST">
+                <table border=1>
+                    <TR><TH style="width: 9%";>Query: 
+                        <TD style="width: 81%;"><input type="text" id="Name" name="Name" size="120"
+                            value="{{sqlcmd|safe}}"></TD>
+                        <TH style="width: 10%;"><input type="submit" value="Execute Query">
+                </table>
+                </form>
+            </div>
+            <div class="section">
+                <h3> Canned queries (can be edited before executing): </h3>
+                <table border rules=crows>
+                {% for q in canqs %}
+                <tr><td>
+                   <button type='button' 
+                      onclick='document.getElementById("Name").value="{{q}}"'>{{loop.index}}</button>
+                   <em> {{q}} </em>
+                </td></tr>
+                {% endfor %}
+                </table>
+            </div>
+            <div class="section" id="msg"> <P><font size="3" color="green">{{ msg }}</font></P></div>
+            <div class="section">
+                <table border=0>
+                    <thead> <tr>
+                            <th style="width: 4%;" >RowID</th>
+                            <th style="width: 36%;" >URL</th>
+                            <th style="width: 50%;" >Title</th>
+                    </tr> </thead>
+                    <tbody>
+                        {% for row in rows %} 
+                        <TR>
+                            <TD> {{ row[0] }} </TD>
+                            <TD> <a href="{{row[2]}}" target=_blank> {{row[2]}}</a> </TD>
+                            <TD> {{ row[1] }} </TD>
+                        </TR>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
+
